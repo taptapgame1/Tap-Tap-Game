@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin & Earn</title>
+    <script src="//whephiwums.com/vignette.min.js" data-zone="9455376" data-sdk="show_9455376"></script>
+    <style>
+        /* 🖼️ ব্যাকগ্রাউন্ড ইমেজ যোগ করা হলো */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-image: url('https://i.postimg.cc/FKJbP12Z/rm21-texture-jite-47.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        .container {
+            background-image:url(https://i.postimg.cc/FKJbP12Z/rm21-texture-jite-47.jpg);
+            padding: 20px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            backdrop-filter: blur(10px);
+        }
+
+        .wallet {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .spin-button, .withdraw-button {
+            background-color: #28a745;
+            color: white;
+            padding: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 9px;
+            border-radius: 50px;
+        }
+
+        .wheel-container {
+            width: 200px;
+            height: 200px;
+            margin: auto;
+        }
+
+        .wheel {
+            width: 105%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid #ffcc00;
+            background: conic-gradient(red 0deg 60deg, yellow 60deg 120deg, green 120deg 180deg, blue 180deg 240deg, orange 240deg 300deg, purple 300deg 360deg);
+            transition: transform 3s ease-out;
+        }
+
+        .withdraw-form {
+            display: none;
+            background-image:url(https://i.postimg.cc/FKJbP12Z/rm21-texture-jite-47.jpg);
+            padding: 10px;
+            border-radius: 5px;
+            width: 90%;
+            margin-top: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            color: green;
+        }
+
+        input, select, button {
+            padding: 8px;
+            margin: 5px;
+            width: 90%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Spin & Earn</h2>
+        <h3>Developed by Technical Tom</h3>
+        <div class="wallet">আপনার ব্যালেন্স: <span id="balance">0</span> পয়েন্ট</div>
+
+        <div class="wheel-container">
+            <div class="wheel" id="wheel"></div>
+        </div>
+
+        <button class="spin-button" onclick="spin()">Spin করুন</button>
+        <button class="withdraw-button" onclick="showWithdrawForm()">উইথড্র রিকোয়েস্ট</button>
+
+        <div class="withdraw-form" id="withdrawForm">
+            <h3>উইথড্র রিকোয়েস্ট</h3>
+            <input type="text" id="telegramUsername" placeholder="🔹 টেলিগ্রাম ইউজারনেম (@username)">
+            <input type="text" id="number" placeholder="📞 মোবাইল নাম্বার">
+            <select id="method">
+                <option value="bkash">বিকাশ</option>
+                <option value="nagad">নগদ</option>
+                <option value="rocket">রকেট</option>
+            </select>
+            <input type="number" id="withdrawAmount" placeholder="💰 উইথড্র পয়েন্ট">
+            <button onclick="withdraw()">✅ উইথড্র করুন</button>
+        </div>
+    </div>
+
+    <script>
+        let balance = localStorage.getItem("balance") ? parseInt(localStorage.getItem("balance")) : 0;
+        document.getElementById("balance").innerText = balance;
+        let isSpinning = false;
+
+        function spin() {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            let wheel = document.getElementById("wheel");
+            let points = [10, 15, 25, 30, 50, 100];
+            let earned = points[Math.floor(Math.random() * points.length)];
+            
+            let randomDegree = 3600 + (Math.floor(Math.random() * 360));
+            wheel.style.transform = `rotate(${randomDegree}deg)`;
+
+            setTimeout(() => {
+                balance += earned;
+                localStorage.setItem("balance", balance);
+                document.getElementById("balance").innerText = balance;
+                alert("✅ আপনি " + earned + " পয়েন্ট পেয়েছেন!");
+                isSpinning = false;
+
+                show_8806288().then(() => {
+                    alert('✅ বিজ্ঞাপন দেখেছেন!');
+                });
+
+            }, 3000);
+        }
+
+        function showWithdrawForm() {
+            let form = document.getElementById("withdrawForm");
+            form.style.display = "block";
+        }
+
+        function withdraw() {
+            let telegramUsername = document.getElementById("telegramUsername").value;
+            let withdrawAmount = parseInt(document.getElementById("withdrawAmount").value);
+            let number = document.getElementById("number").value;
+            let method = document.getElementById("method").value;
+
+            if (!telegramUsername || !withdrawAmount || !number) {
+                alert("⚠️ দয়া করে সব তথ্য দিন!");
+                return;
+            }
+
+            if (withdrawAmount < 500) {
+                alert("❌ উইথড্র করতে হলে কমপক্ষে ৫০০ পয়েন্ট লাগবে!");
+                return;
+            }
+
+            if (withdrawAmount > balance) {
+                alert("❌ আপনার কাছে পর্যাপ্ত পয়েন্ট নেই!");
+                return;
+            }
+
+            balance -= withdrawAmount;
+            localStorage.setItem("balance", balance);
+            document.getElementById("balance").innerText = balance;
+
+            let message = `📢 *উইথড্র রিকয়েস্ট* 📢\n\n👤 ইউজার: ${telegramUsername}\n💳 পেমেন্ট মেথড: ${method}\n📞 মোবাইল: ${number}\n💰 উইথড্র এমাউন্ট: ${withdrawAmount} পয়েন্ট`;
+
+            sendToTelegram(message);
+
+            alert("✅ উইথড্র রিকয়েস্ট পাঠানো হয়েছে!");
+        }
+
+        function sendToTelegram(message) {
+            const botToken = "8047145917:AAGBWfuvl8c-yZuELZ-0Xas2yJMSCMPJHTY";  
+            const chatId = "6712726474";  
+
+            let url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+
+            fetch(url).then(response => response.json()).then(data => {
+                console.log("Message sent to Telegram:", data);
+            }).catch(error => {
+                console.error("Error sending message:", error);
+            });
+        }
+    </script>
+
+</body>
+</html>
